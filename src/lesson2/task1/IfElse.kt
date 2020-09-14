@@ -68,7 +68,12 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String = when {
+    (age % 100 / 10) == 1 -> "$age лет"
+    (age % 10) == 1 -> "$age год"
+    (age % 10) in 2..4 -> "$age года"
+    else -> "$age лет"
+}
 
 /**
  * Простая (2 балла)
@@ -81,7 +86,14 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double {
+    val halfWay = (t1 * v1 + t2 * v2 + t3 * v3) / 2
+    return when {
+        (t1 * v1) >= halfWay -> halfWay / v1
+        (t2 * v2) >= halfWay - (t1 * v1) -> t1 + (halfWay - (t1 * v1)) / v2
+        else -> t1 + t2 + (halfWay - (t1 * v1) - (t2 * v2)) / v3
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -122,7 +134,21 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val maxSide = max(max(a, b), c)
+    val cosine: Double
+    cosine = when (maxSide) {
+        a -> (a * a - b * b - c * c) / (-2 * b * c)
+        b -> (b * b - a * a - c * c) / (-2 * a * c)
+        else -> (c * c - b * b - a * a) / (-2 * b * a)
+    }
+    return when {
+        cosine == 0.0 -> 1
+        cosine > 0.0 && cosine <= 1.0 -> 0
+        cosine < 0.0 && cosine >= -1.0 -> 2
+        else -> -1
+    }
+}
 
 /**
  * Средняя (3 балла)
