@@ -136,8 +136,7 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val maxSide = max(max(a, b), c)
-    val cosine: Double
-    cosine = when (maxSide) {
+    val cosine = when (maxSide) {
         a -> (a * a - b * b - c * c) / (-2 * b * c)
         b -> (b * b - a * a - c * c) / (-2 * a * c)
         else -> (c * c - b * b - a * a) / (-2 * b * a)
