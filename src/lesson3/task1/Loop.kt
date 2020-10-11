@@ -80,14 +80,23 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    if (n <= 2) return 1
+    return fib(n - 2) + fib(n - 1)
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0)
+            return i
+    }
+    return n
+}
 
 /**
  * Простая (2 балла)
@@ -168,7 +177,15 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var number = n / 10
+    val digit: Int = n % 10
+    while (number > 0) {
+        if (number % 10 != digit) return true
+        number /= 10
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -212,4 +229,22 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    if (n <= 2) return 1
+    var count = 2
+    var firstNumber = 1
+    var secondNumber = 1
+    var fib: Int
+    while (count < n) {
+        fib = secondNumber + firstNumber
+        firstNumber = secondNumber
+        secondNumber = fib
+        while (fib > 0) {
+            fib /= 10
+            count++
+        }
+    }
+    count -= n
+    while (count-- > 0) secondNumber /= 10
+    return secondNumber % 10
+}

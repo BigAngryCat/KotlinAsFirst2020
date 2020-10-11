@@ -127,7 +127,9 @@ fun abs(v: List<Double>): Double = TODO()
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double =
+    if (list.isEmpty()) 0.0
+    else list.sum() / list.size
 
 /**
  * Средняя (3 балла)
@@ -137,7 +139,15 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isNotEmpty()) {
+        val mean = list.sum() / list.size
+        for (index in 0 until list.size) {
+            list[index] -= mean
+        }
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -195,7 +205,15 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    val list = mutableListOf<Int>()
+    var number = n
+    do {
+        list.add(0, number % base)
+        number /= base
+    } while (number > 0)
+    return list
+}
 
 /**
  * Сложная (4 балла)
@@ -208,7 +226,19 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val list = mutableListOf<Char>()
+    var number = n
+    var digit: Int
+    do {
+        digit = number % base
+        if (digit < 9)
+            list.add((digit + '0'.toInt()).toChar())
+        else list.add((digit - 10 + 'a'.toInt()).toChar())
+        number /= base
+    } while (number > 0)
+    return list.joinToString(separator = "").reversed()
+}
 
 /**
  * Средняя (3 балла)
