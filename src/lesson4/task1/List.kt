@@ -232,7 +232,7 @@ fun convertToString(n: Int, base: Int): String {
     var digit: Int
     do {
         digit = number % base
-        if (digit < 9)
+        if (digit <= 9)
             list.add((digit + '0'.toInt()).toChar())
         else list.add((digit - 10 + 'a'.toInt()).toChar())
         number /= base
