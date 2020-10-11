@@ -140,8 +140,8 @@ fun mean(list: List<Double>): Double =
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.isNotEmpty()) {
-        val mean = list.sum() / list.size
+    val mean = mean(list)
+    if (mean != 0.0) {
         for (index in 0 until list.size) {
             list[index] -= mean
         }
@@ -209,10 +209,10 @@ fun convert(n: Int, base: Int): List<Int> {
     val list = mutableListOf<Int>()
     var number = n
     do {
-        list.add(0, number % base)
+        list.add(number % base)
         number /= base
     } while (number > 0)
-    return list
+    return list.reversed()
 }
 
 /**
@@ -227,17 +227,14 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
+    val listInt = convert(n, base)
     val list = mutableListOf<Char>()
-    var number = n
-    var digit: Int
-    do {
-        digit = number % base
-        if (digit <= 9)
-            list.add((digit + '0'.toInt()).toChar())
-        else list.add((digit - 10 + 'a'.toInt()).toChar())
-        number /= base
-    } while (number > 0)
-    return list.joinToString(separator = "").reversed()
+    for (element in listInt) {
+        if (element <= 9)
+            list.add('0' + element)
+        else list.add('a' + element - 10)
+    }
+    return list.joinToString(separator = "")
 }
 
 /**

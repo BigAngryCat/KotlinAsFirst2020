@@ -84,13 +84,12 @@ fun fib(n: Int): Int {
     if (n <= 2) return 1
     var fib1 = 1
     var fib2 = 1
-    var fib3 = 2
     for (i in 3..n) {
-        fib3 = fib2 + fib1
+        val fib3 = fib2 + fib1
         fib1 = fib2
         fib2 = fib3
     }
-    return fib3
+    return fib2
 }
 
 /**
@@ -242,9 +241,8 @@ fun fibSequenceDigit(n: Int): Int {
     var count = 2
     var firstNumber = 1
     var secondNumber = 1
-    var fib: Int
     while (count < n) {
-        fib = secondNumber + firstNumber
+        var fib = secondNumber + firstNumber
         firstNumber = secondNumber
         secondNumber = fib
         while (fib > 0) {
