@@ -141,10 +141,8 @@ fun mean(list: List<Double>): Double =
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val mean = mean(list)
-    if (mean != 0.0) {
-        for (index in 0 until list.size) {
-            list[index] -= mean
-        }
+    for (index in 0 until list.size) {
+        list[index] -= mean
     }
     return list
 }
@@ -228,13 +226,12 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val listInt = convert(n, base)
-    val list = mutableListOf<Char>()
-    for (element in listInt) {
-        if (element <= 9)
-            list.add('0' + element)
-        else list.add('a' + element - 10)
-    }
-    return list.joinToString(separator = "")
+    return listInt.joinToString(separator = "", transform = {
+        when {
+            it <= 9 -> "$it"
+            else -> ('a' + it - 10).toString()
+        }
+    })
 }
 
 /**
