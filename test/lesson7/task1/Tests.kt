@@ -221,6 +221,14 @@ Basic, Ruby, Swift.
         )
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
+
+        transliterate(
+            "input/trans_in1.txt",
+            mapOf('з' to "", 'p' to "r", 'д' to "5", 'й' to "y", 'М' to "m", 'и' to "YY", '!' to "!!!"),
+            "temp.txt"
+        )
+        assertFileContent("temp.txt", "5равствуy,\nmyyр!!!")
+        File("temp.txt").delete()
     }
 
     @Test

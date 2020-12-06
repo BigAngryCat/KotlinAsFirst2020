@@ -258,7 +258,23 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val res = friends.toMutableMap()
+    val people = mutableSetOf<String>()
+    for ((name, ) in friends)
+        people.add(name)
+    for ((name, friendsNames) in friends)
+        for (friend in friendsNames) {
+            if (friends.containsKey(friend)) {
+                val setNames = res[name]!!.toMutableSet()
+                setNames.addAll(friends[friend]!! - name)
+                res[name] = setNames
+            }
+            if (friend !in people)
+                res[friend] = setOf()
+        }
+    return res
+}
 
 /**
  * Сложная (6 баллов)
@@ -277,7 +293,22 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val set = list.toSet()
+    if ((number % 2) == 0)
+        if (number / 2 in set) {
+            val a = list.indexOf(number / 2)
+            val b = list.lastIndexOf(number / 2)
+            if (a != b)
+                return Pair(a, b)
+        }
+    for (n1 in number downTo number / 2 + 1)
+        if (n1 in set)
+            if ((number - n1) in set)
+                return Pair(list.indexOf(number - n1), list.indexOf(n1))
+    return Pair(-1, -1)
+}
+
 
 /**
  * Очень сложная (8 баллов)
