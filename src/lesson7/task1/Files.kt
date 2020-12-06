@@ -226,7 +226,8 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val outputFile = File(outputName).printWriter()
-    File(inputName).bufferedReader().forEachLine {
+    val stream = File(inputName).bufferedReader()
+    stream.forEachLine {
         for (symbol in it) {
             fun printStr(key: Char) = if (symbol.isUpperCase()) {
                 var newString = dictionary[key]!!.toLowerCase()
@@ -240,7 +241,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 else -> outputFile.print(symbol)
             }
         }
-        if ('\n' in dictionary)
+        if ('\n' in dictionary && stream.read() == '\n'.toInt())
             outputFile.print(dictionary['\n'])
         else outputFile.println()
     }

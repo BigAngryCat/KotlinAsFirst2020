@@ -260,19 +260,24 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val res = friends.toMutableMap()
-    val peopleSet = friends.keys.toSet()
-    val friendsSet = mutableSetOf<String>()
-    friends.values.forEach { friendsSet.addAll(it) }
-    friendsSet.removeAll(peopleSet)
-    friendsSet.forEach { res[it] = setOf() }
-    friends.keys.forEach { name ->
-        friends.keys.forEach {
-            if (name in friends[it]!!) {
-                val newSet = friends[it]!!.toMutableSet()
-                newSet.addAll(friends[name]!! - it)
-                res[it] = newSet
+    friends.keys.forEach { person ->
+        val setOfPastPersons = mutableSetOf<String>()
+        fun searchFriends(name: String): Set<String> {
+            setOfPastPersons.add(name)
+            val newSet = mutableSetOf<String>()
+            friends[name]!!.forEach {
+
+                if (it !in setOfPastPersons)
+                    if (it in friends) {
+                        newSet.addAll(searchFriends(it) + friends[it]!!)
+                    } else {
+                        res[it] = setOf()
+                    }
             }
+            setOfPastPersons.remove(name)
+            return newSet
         }
+        res[person] = friends[person]!! + searchFriends(person) - person
     }
     return res
 }
