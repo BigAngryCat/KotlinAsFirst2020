@@ -140,7 +140,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  */
 fun plusMinus(expression: String): Int {
     val line = expression.split(" ")
-    if (!line[0][0].isDigit())
+    if (line[0].isEmpty() || !line[0][0].isDigit())
         throw IllegalArgumentException()
     var result = line[0].toInt()
     for (i in 1 until line.size step 2) {

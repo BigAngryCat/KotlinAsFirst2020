@@ -240,7 +240,9 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 else -> outputFile.print(symbol)
             }
         }
-        outputFile.println()
+        if ('\n' in dictionary)
+            outputFile.print(dictionary['\n'])
+        else outputFile.println()
     }
     outputFile.close()
 }
