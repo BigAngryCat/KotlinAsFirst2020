@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.nio.charset.Charset
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -92,27 +93,27 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val outputFile = File(outputName).bufferedWriter()
-    val set = setOf('ж', 'ч', 'щ', 'ш')
-    val map = mapOf(
-        'ы' to 'и', 'Ы' to 'И',
-        'я' to 'а', 'Я' to 'А',
-        'ю' to 'у', 'Ю' to 'У',
-    )
-    var lastSymbol = ' '
-    File(inputName).bufferedReader().forEachLine {
-        for (symbol in it) {
-            var symbolToWrite = symbol
-            if (lastSymbol.toLowerCase() in set)
-                if (symbol in map)
-                    symbolToWrite = map[symbol]!!
-            outputFile.write(symbolToWrite.toInt())
-            lastSymbol = symbol
+    File(outputName).bufferedWriter().use { outputFile ->
+        val set = setOf('ж', 'ч', 'щ', 'ш')
+        val map = mapOf(
+            'ы' to 'и', 'Ы' to 'И',
+            'я' to 'а', 'Я' to 'А',
+            'ю' to 'у', 'Ю' to 'У',
+        )
+        var lastSymbol = ' '
+        File(inputName).bufferedReader().forEachLine {
+            for (symbol in it) {
+                var symbolToWrite = symbol
+                if (lastSymbol.toLowerCase() in set)
+                    if (symbol in map)
+                        symbolToWrite = map[symbol]!!
+                outputFile.write(symbolToWrite.toInt())
+                lastSymbol = symbol
+            }
+            lastSymbol = ' '
+            outputFile.write('\n'.toInt())
         }
-        lastSymbol = ' '
-        outputFile.write('\n'.toInt())
     }
-    outputFile.close()
 }
 
 /**
@@ -225,26 +226,35 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    val outputFile = File(outputName).printWriter()
-    val stream = File(inputName).bufferedReader()
-    stream.forEachLine {
-        for (symbol in it) {
-            fun printStr(key: Char) = if (symbol.isUpperCase()) {
-                var newString = dictionary[key]!!.toLowerCase()
-                if (newString.isNotEmpty())
-                    newString = newString[0].toUpperCase() + newString.substring(1)
-                outputFile.print(newString)
-            } else outputFile.print(dictionary[key]!!.toLowerCase())
-            when {
-                symbol.toLowerCase() in dictionary -> printStr(symbol.toLowerCase())
-                symbol.toUpperCase() in dictionary -> printStr(symbol.toUpperCase())
-                else -> outputFile.print(symbol)
-            }
-        }
-        if ('\n' in dictionary && stream.read() == '\n'.toInt())
-            outputFile.print(dictionary['\n'])
-        else outputFile.println()
+    val outputFile = File(outputName).printWriter(Charset.defaultCharset())
+    val reader = File(inputName).bufferedReader(Charset.defaultCharset())
+    val codeDictionaryInLowerCase = mutableMapOf<Int, String>()
+    val codeDictionaryInUpperCase = mutableMapOf<Int, String>()
+    dictionary.keys.forEach {
+        codeDictionaryInLowerCase[it.toLowerCase().toInt()] = dictionary[it]!!
+        codeDictionaryInUpperCase[it.toUpperCase().toInt()] = dictionary[it]!!
     }
+    while (true) {
+        val symbol = reader.read()
+        if (symbol == -1) break
+        when (symbol) {
+            in codeDictionaryInLowerCase -> {
+                outputFile.print(codeDictionaryInLowerCase[symbol]!!.toLowerCase())
+                continue
+            }
+            in codeDictionaryInUpperCase -> {
+                if (codeDictionaryInUpperCase[symbol]!!.isNotEmpty())
+                    outputFile.print(
+                        codeDictionaryInUpperCase[symbol]!![0].toUpperCase() +
+                                codeDictionaryInUpperCase[symbol]!!.toLowerCase().substring(1)
+                    )
+                continue
+            }
+            '\r'.toInt() -> continue
+            else -> outputFile.print(symbol.toChar())
+        }
+    }
+    reader.close()
     outputFile.close()
 }
 

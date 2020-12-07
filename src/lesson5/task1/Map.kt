@@ -2,6 +2,9 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+import kotlin.math.min
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -260,24 +263,28 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val res = friends.toMutableMap()
+    val setOfPeopleWithAllFriends = mutableSetOf<String>()
     friends.keys.forEach { person ->
         val setOfPastPersons = mutableSetOf<String>()
         fun searchFriends(name: String): Set<String> {
             setOfPastPersons.add(name)
             val newSet = mutableSetOf<String>()
+            newSet.addAll(friends[name]!!)
             friends[name]!!.forEach {
-
-                if (it !in setOfPastPersons)
-                    if (it in friends) {
-                        newSet.addAll(searchFriends(it) + friends[it]!!)
-                    } else {
+                if (it in setOfPeopleWithAllFriends)
+                    newSet.addAll(res[it]!!)
+                else if (it !in setOfPastPersons)
+                    if (it in friends)
+                        newSet.addAll(searchFriends(it))
+                    else {
                         res[it] = setOf()
                     }
             }
-            setOfPastPersons.remove(name)
+            newSet.remove(name)
             return newSet
         }
-        res[person] = friends[person]!! + searchFriends(person) - person
+        res[person] = friends[person]!! + searchFriends(person)
+        setOfPeopleWithAllFriends.add(person)
     }
     return res
 }
@@ -301,6 +308,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val set = list.toSet()
+    val mapPairOfNumbers = mutableMapOf<Int, Int>()
+    for (i in number downTo number / 2 + 1)
+        mapPairOfNumbers[i] = number - i
+    for ((number1, number2) in mapPairOfNumbers)
+        if (number1 in set && number2 in set)
+            return Pair(
+                min(list.indexOf(number1), list.indexOf(number2)),
+                max(list.indexOf(number1), list.indexOf(number2))
+            )
     if ((number % 2) == 0)
         if (number / 2 in set) {
             val a = list.indexOf(number / 2)
@@ -308,10 +324,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
             if (a != b)
                 return Pair(a, b)
         }
-    for (n1 in number downTo number / 2 + 1)
-        if (n1 in set)
-            if ((number - n1) in set)
-                return Pair(list.indexOf(number - n1), list.indexOf(n1))
     return Pair(-1, -1)
 }
 
