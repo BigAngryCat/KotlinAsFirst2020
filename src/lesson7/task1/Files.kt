@@ -228,30 +228,21 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val outputFile = File(outputName).printWriter(Charset.defaultCharset())
     val reader = File(inputName).bufferedReader(Charset.defaultCharset())
-    val codeDictionaryInLowerCase = mutableMapOf<Int, String>()
-    val codeDictionaryInUpperCase = mutableMapOf<Int, String>()
-    dictionary.keys.forEach {
-        codeDictionaryInLowerCase[it.toLowerCase().toInt()] = dictionary[it]!!
-        codeDictionaryInUpperCase[it.toUpperCase().toInt()] = dictionary[it]!!
-    }
     while (true) {
-        val symbol = reader.read()
-        if (symbol == -1) break
-        when (symbol) {
-            in codeDictionaryInLowerCase -> {
-                outputFile.print(codeDictionaryInLowerCase[symbol]!!.toLowerCase())
-                continue
-            }
-            in codeDictionaryInUpperCase -> {
-                if (codeDictionaryInUpperCase[symbol]!!.isNotEmpty())
-                    outputFile.print(
-                        codeDictionaryInUpperCase[symbol]!![0].toUpperCase() +
-                                codeDictionaryInUpperCase[symbol]!!.toLowerCase().substring(1)
-                    )
-                continue
-            }
-            '\r'.toInt() -> continue
-            else -> outputFile.print(symbol.toChar())
+        val codeOfSymbol = reader.read()
+        if (codeOfSymbol == -1) break
+        val symbol = codeOfSymbol.toChar()
+        fun printStr(key: Char) = if (symbol.isUpperCase()) {
+            var newString = dictionary[key]!!.toLowerCase()
+            if (newString.isNotEmpty())
+                newString = newString[0].toUpperCase() + newString.substring(1)
+            outputFile.print(newString)
+        } else outputFile.print(dictionary[key]!!.toLowerCase())
+        when {
+            symbol.toLowerCase() in dictionary -> printStr(symbol.toLowerCase())
+            symbol.toUpperCase() in dictionary -> printStr(symbol.toUpperCase())
+            symbol == '\r' -> continue
+            else -> outputFile.print(symbol)
         }
     }
     reader.close()
